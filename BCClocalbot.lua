@@ -28,6 +28,22 @@ function bot_commands(txt)
 			return
 		end
 		
+		m, l = string.find(msg, "turncount")
+		if m then
+			local val = string.sub(msg, l+2, string.len(msg))
+			if ram.get_state() == 0x12 then
+				print("Tournament in progress.")
+				return
+			else
+				if tonumber(val) ~= nil then
+					val = tonumber(val)
+					if val > 99 then val = 99 end
+					memory.write_u8(0x0802894C, val & 0xFF)
+					print("Turn Count set to " .. val .. ".")
+				end
+			end
+		end
+		
 		m, l = string.find(msg, "fight")
 		if m then
 			local newmsg = string.sub(msg, l+2, string.len(msg))
@@ -38,10 +54,10 @@ function bot_commands(txt)
 				local username = string.sub(newmsg, 0, string.find(newmsg, ",")-1)
 				local codeName = string.sub(newmsg, string.find(newmsg, ",")+1, string.len(newmsg))
 				local code = string.sub(codeName, string.find(codeName, ",")+1, string.len(newmsg))
-				local twitchName = string.sub(codeName, string.find(codeName, ",")+1, string.len(newmsg))
+				local twitchName = string.sub(code, string.find(code, ",")+1, string.len(newmsg))
 				codeName = string.sub(codeName, 0, string.find(codeName, ",")-1)
-				codeName = string.upper(codeName)
 				code = string.sub(code, 0, string.find(code, ",")-1)
+				code = string.upper(code)
 				print("[USER DATA]\n" .. username .. "\n" .. codeName .. "\n" .. code .. "\n" .. twitchName)
 				
 				if username ~= nil and codeName ~= nil and code ~= nil then
@@ -232,6 +248,13 @@ while true do
 		if k == "Shift" then
 			if string.len(command_string) > 0 and input_previous[k] ~= v and tonumber(command_string) ~= nil then
 				bot_commands("banlist " .. command_string)
+				command_string = ""
+				break
+			end
+		end
+		if k == "Tab" then
+			if string.len(command_string) > 0 and input_previous[k] ~= v and tonumber(command_string) ~= nil then
+				bot_commands("turncount " .. command_string)
 				command_string = ""
 				break
 			end

@@ -29,7 +29,7 @@ function twitchbot_commands()
 		
 		m, l = string.find(msg, ":!info")
 		if m then
-			TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :!fight <UserName>,<CodeName>,<Code> to add a setup! !left <value>, !right <value>, or !random <value> to bet on combatants at the start of each battle with Zenny! !balance to see how much Zenny you have! Use !banned to check the current Chip ban list! Navi Setups can be generated here: https://therockmanexezone.com/ncgen/ \r\n")
+			TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :!fight <UserName>,<CodeName>,<Code> to add a setup! !left <value>, !right <value>, or !random <value> to bet on combatants at the start of each battle with Zenny! !balance to see how much Zenny you have! Use !banned to check the current Chip ban list! Navi Setups can be generated here: https://therockmanexezone.com/ncgen/\r\n")
 			return
 		end
 		
@@ -42,7 +42,7 @@ function twitchbot_commands()
 					if chips:len() > 0 then chips = chips .. ", " end
 					chips = chips .. database.lookup_chips[v]
 				end
-				TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :"..twitchName.." Here's the current ban list, titled \"".. TwitchBotVars.ActiveBanList[1] .."\": ".. chips .." \r\n")
+				TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :"..twitchName.." Here's the current ban list, titled \"".. TwitchBotVars.ActiveBanList[1] .."\": ".. chips .."\r\n")
 			end
 		end
 		
@@ -50,16 +50,35 @@ function twitchbot_commands()
 		if m then
 			local twitchName = string.sub(msg, 2, string.find(msg, "!")-1)
 			local val = string.sub(msg, l+2, string.len(msg))
-			if twitchName == TwitchBotVars.Channel or twitchName ==TwitchBotVars.Name then
+			if twitchName == TwitchBotVars.Channel or twitchName == TwitchBotVars.Name then
 				for i=1,#TwitchBotVars.BanLists do
 					if val == TwitchBotVars.BanLists[i][1] then
 						TwitchBotVars.ActiveBanList = TwitchBotVars.BanLists[i]
-						TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :Active Ban List set to ".. TwitchBotVars.ActiveBanList[1] ..". \r\n")
+						TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :Active Ban List set to ".. TwitchBotVars.ActiveBanList[1] ..".\r\n")
 						return
 					end
 				end
 			end
 			return
+		end
+		
+		m, l = string.find(msg, ":!turncount")
+		if m then
+			local twitchName = string.sub(msg, 2, string.find(msg, "!")-1)
+			local val = string.sub(msg, l+2, string.len(msg))
+			if twitchName == TwitchBotVars.Channel or twitchName == TwitchBotVars.Name then
+				if ram.get_state() == 0x12 then
+					TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :Tournament in progress.\r\n")
+					return
+				else
+					if tonumber(val) ~= nil then
+						val = tonumber(val)
+						if val > 99 then val = 99 end
+						memory.write_u8(0x0802894C, val & 0xFF)
+						TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :Turn Count set to " .. val .. ".\r\n")
+					end
+				end
+			end
 		end
 		
 		m, l = string.find(msg, ":!balance")
@@ -72,7 +91,7 @@ function twitchbot_commands()
 				tbl = SQL.readcommand("SELECT zenny FROM viewers WHERE twitchName=\""..twitchName.."\"")
 				return
 			end
-			TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :"..twitchName.." Has "..tbl["zenny 0"].." Zenny. \r\n")
+			TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :"..twitchName.." Has "..tbl["zenny 0"].." Zenny.\r\n")
 			return
 		end
 		
@@ -93,7 +112,7 @@ function twitchbot_commands()
 						local tbl = SQL.readcommand("SELECT zenny FROM viewers WHERE twitchName=\""..twitchName.."\"")
 						if val > tbl["zenny 0"] then val = tbl["zenny 0"] end
 						SQL.writecommand("UPDATE viewers SET betValue = "..val..", betTarget = \"l\" WHERE twitchName = \""..twitchName.."\"")
-						TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :"..twitchName.." bets left with "..val.." Zenny! \r\n")
+						TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :"..twitchName.." bets left with "..val.." Zenny!\r\n")
 						return
 					end
 				end
@@ -118,7 +137,7 @@ function twitchbot_commands()
 						local tbl = SQL.readcommand("SELECT zenny FROM viewers WHERE twitchName=\""..twitchName.."\"")
 						if val > tbl["zenny 0"] then val = tbl["zenny 0"] end
 						SQL.writecommand("UPDATE viewers SET betValue = "..val..", betTarget = \"r\" WHERE twitchName = \""..twitchName.."\"")
-						TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :"..twitchName.." bets right with "..val.." Zenny! \r\n")
+						TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :"..twitchName.." bets right with "..val.." Zenny!\r\n")
 						return
 					end
 				end
@@ -145,7 +164,7 @@ function twitchbot_commands()
 						local choice = "l"
 						if math.random(0,1) == 1 then choice = "r" end
 						SQL.writecommand("UPDATE viewers SET betValue = "..val..", betTarget = \""..choice.."\" WHERE twitchName = \""..twitchName.."\"")
-						TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :"..twitchName.." bets randomly with "..val.." Zenny! \r\n")
+						TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :"..twitchName.." bets randomly with "..val.." Zenny!\r\n")
 						return
 					end
 				end
@@ -157,7 +176,7 @@ function twitchbot_commands()
 		if m then
 			local newmsg = string.sub(msg, l+2, string.len(msg))
 			if ram.get_state() == 0x12 then
-				TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :Tournament in progress. \r\n")
+				TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :Tournament in progress.\r\n")
 				return
 			else
 				local username = string.sub(newmsg, 0, string.find(newmsg, ",")-1)
@@ -180,7 +199,7 @@ function twitchbot_commands()
 							end
 						end
 						if badcode then
-							TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :"..twitchName..": Bad code detected. \r\n")
+							TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :"..twitchName..": Bad code detected.\r\n")
 							return
 						else
 							local banned = ""
@@ -195,7 +214,7 @@ function twitchbot_commands()
 								end
 							end
 							if banned:len() > 0 then
-								TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :"..twitchName..": Banned Chips Detected! (".. banned ..") \r\n")
+								TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :"..twitchName..": Banned Chips Detected! (".. banned ..")\r\n")
 								return
 							end
 							
@@ -221,22 +240,22 @@ function twitchbot_commands()
 									if olduserCheck == "No rows found" and oldcodeCheck == "No rows found" then
 										SQL.writecommand("INSERT INTO oldcodes VALUES (\""..username.."\", \""..twitchName.."\", \""..code.."\", \""..codeName.."\", 0, 0)")
 									end
-									TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :"..username.." submitted! \r\n")
+									TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :"..username.." submitted!\r\n")
 									joypad.set({A=true,B=true,Start=true,Select=true})
 									if count >= 15 then
 										if #TwitchBotVars.ActiveBanList > 0 then
 											TwitchBotVars.ActiveBanList = {}
-											TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :Active Ban List reset. \r\n")
+											TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :Active Ban List reset.\r\n")
 										end
-										TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :Starting Tournament! \r\n")
+										TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :Starting Tournament!\r\n")
 										return
 									end
 								else
-									TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :Duplicate Entry found. \r\n")
+									TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :Duplicate Entry found.\r\n")
 									return
 								end
 							else
-								TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :Tournament's full! \r\n")
+								TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :Tournament's full!\r\n")
 								return
 							end
 						end
@@ -331,7 +350,7 @@ SQL.writecommand("CREATE TABLE viewers (twitchName varChar(255), zenny int NOT n
 while true do
 	if #TwitchBotVars.ActiveBanList < 1 and #TwitchBotVars.BanLists > 0 then
 		TwitchBotVars.ActiveBanList = TwitchBotVars.BanLists[math.random(1, #TwitchBotVars.BanLists)]
-		TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :Active Ban List set to ".. TwitchBotVars.ActiveBanList[1] ..". \r\n")
+		TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :Active Ban List set to ".. TwitchBotVars.ActiveBanList[1] ..".\r\n")
 	end
 	if counter % 10 == 0 and TwitchBotVars.Client then
 		twitchbot_commands()
@@ -342,7 +361,7 @@ while true do
 	if ram.get_state() == 0x12 and ram.get_tournament_state() == 0x04 and ram.get_tournament_substate() == 0x07 then
 		local results = get_results()
 		if results.prize > 0 and results.totalbet > 0 then
-			TwitchBotVars.Client:send("PRIVMSG #".. TwitchBotVars.Channel .." :".. results.winner .." wins! Distributing ".. results.prize .."/".. results.totalbet .." Zenny. \r\n")
+			TwitchBotVars.Client:send("PRIVMSG #".. TwitchBotVars.Channel .." :".. results.winner .." wins! Distributing ".. results.prize .."/".. results.totalbet .." Zenny.\r\n")
 		end
 	end
 	counter = counter + 1

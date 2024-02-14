@@ -23,6 +23,15 @@ Inside "settings.txt", which is accessed by both "BCClocalbot.lua" and "BCCtwitc
 - Don't edit "ActiveBanList" in this file. It will be automatically updated between tournaments and can be changed on the fly by your bot account or the Channel's account.
 - BanLists is a list of lists, with those lists further defined with a Ban List name for their first value and another list comprised of Battle Chips as their second value, which are seperated by commas. Each full Ban List table must be seperated by commas as well. (Example Ban List: {"No Cannons", {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,51,52,53,54,63,64,65,116}})
 
+### BCCwitchbot commands
+- *!info*: Prints basic information for viewers, letting them know how to use the bot.
+- *!banned*: Prints the Active Ban List.
+- *!banchange <string>*: Allows the host to change the Active Ban List.
+- *!balance*: Lists a user's Zenny balance.
+- *!turncount <int>*: Allows the host to change the total turn count for a tournament. Defaults to 10 turns.
+- *!left/!right/!random <int>*: Lets the host and viewers gamble Zenny on either of the Active Combatants, either via choice or randomly. If you don't have as much as you want to bet, it fallbacks to all of your Zenny. Betting Zenny is possible on your own Program Decks. Zenny defaults to 100 and won't go below 100 even if you lose a bet.
+- *!fight <username/deckname>,<navicodename>,<navicode>*: Adds a Program Deck setup to the tournament. Both the host and viewers can submit them.
+
 ### BCClocalbot Controls
 "BCClocalbot.lua" requires input from the user playing the game to perform its commands.
 - Keyboard 0-9: Type in Numbers

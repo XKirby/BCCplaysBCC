@@ -138,7 +138,7 @@ while true do
     local state = ram.get_state()
     local substate = ram.get_substate()
 	
-	if state == 0x08 and substate() == 0x02 then
+	if state == 0x08 and substate == 0x02 then
 		joypad.set({A=not (joypad.get()["A"])})
 	end
 

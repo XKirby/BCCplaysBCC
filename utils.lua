@@ -27,12 +27,6 @@ function utils.decode_navicode(code_name, code)
         end
         dat[i] = b
     end
-	
-	local sum = 0
-	for i = 0,13 do
-		sum = sum + dat[i]
-	end
-	if sum ~= dat[14] then return nil end
 
     for i = 0, 13 do
         dat[i] = dat[i] ~ name_bytes[(i & 3) + 1]

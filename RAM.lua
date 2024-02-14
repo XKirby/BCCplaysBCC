@@ -5,6 +5,7 @@ local data = require("data")
 -- Addresses
 ram.addr = {}
 
+ram.addr.turncount = 0x0200B82C
 ram.addr.fastforward = 0x020051A4
 ram.addr.state = 0x020070F0
 ram.addr.substate = 0x020070F1
