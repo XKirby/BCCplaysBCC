@@ -74,7 +74,7 @@ function twitchbot_commands()
 					if tonumber(val) ~= nil then
 						val = tonumber(val)
 						if val > 99 then val = 99 end
-						memory.write_u8(0x0802894C, val & 0xFF)
+						TwitchBotVars.TurnCount = val
 						TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :Turn Count set to " .. val .. ".\r\n")
 					end
 				end
@@ -358,10 +358,16 @@ while true do
 	if counter % 3600 == 0 and TwitchBotVars.Client then
 		TwitchBotVars.Client:settimeout(1/60)
 	end
-	if ram.get_state() == 0x12 and ram.get_tournament_state() == 0x04 and ram.get_tournament_substate() == 0x07 then
-		local results = get_results()
-		if results.prize > 0 and results.totalbet > 0 then
-			TwitchBotVars.Client:send("PRIVMSG #".. TwitchBotVars.Channel .." :".. results.winner .." wins! Distributing ".. results.prize .."/".. results.totalbet .." Zenny.\r\n")
+	if ram.get_state() == 0x12
+		if TwitchBotVars.TurnCount > 0 then
+			if TwitchBotVars.TurnCount > 99 then TwitchBotVars.TurnCount = 99 end
+			memory.write_u8(0x0802894C, TwitchBotVars.TurnCount & 0xFF)
+		end
+		if ram.get_tournament_state() == 0x04 and ram.get_tournament_substate() == 0x07 then
+			local results = get_results()
+			if results.prize > 0 and results.totalbet > 0 then
+				TwitchBotVars.Client:send("PRIVMSG #".. TwitchBotVars.Channel .." :".. results.winner .." wins! Distributing ".. results.prize .."/".. results.totalbet .." Zenny.\r\n")
+			end
 		end
 	end
 	counter = counter + 1
