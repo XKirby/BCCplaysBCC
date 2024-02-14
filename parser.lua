@@ -34,9 +34,9 @@ function parser.parse_textbox()
         local last_flag = nil
         for j = 0, 17 do
             local chr_byte = memory.read_u16_le(0x02004EC8 + ((i * 0x12 + j) * 2))
-            local flag = bit.rshift(bit.band(chr_byte, 0xF000), 0x0C)
+            local flag = (chr_byte & 0xF000) >> 0x0C
 
-            if bit.band(flag, 0x08) == 0x08 then
+            if flag & 0x08 == 0x08 then
                 -- terminator
                 if flag ~= last_flag or j == 17 then
                     if last_flag == 0x01 then
@@ -46,12 +46,12 @@ function parser.parse_textbox()
                     end
                 end
                 break
-            elseif bit.band(flag, 0x01) == 0x01 then
+            elseif flag & 0x01 == 0x01 then
                 -- red text (left player)
                 if flag ~= last_flag then
                     line = line .. "[r]"
                 end
-            elseif bit.band(flag, 0x02) == 0x02 then
+            elseif flag & 0x02 == 0x02 then
                 -- blue text (right player)
                 if flag ~= last_flag then
                     line = line .. "[b]"
@@ -67,7 +67,7 @@ function parser.parse_textbox()
                 end
             end
 
-            line = line .. data.lookup_tbl[bit.band(chr_byte, 0x0FFF)]
+            line = line .. data.lookup_tbl[chr_byte & 0x0FFF]
             last_flag = flag
         end
         if line ~= "" then

@@ -165,5 +165,6 @@ local function load_table(path)
 end
 
 data.tbl, data.lookup_tbl, data.tbl_maxLen = load_table("bcc-utf8.tbl")
+data.chips, data.lookup_chips, data.chips_maxLen = load_table("bcc-chips.tbl")
 
 return data

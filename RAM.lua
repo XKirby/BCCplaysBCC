@@ -87,7 +87,7 @@ function ram.get_right_navi_index()
 end
 
 function ram.did_left_win()
-    return bit.rshift(memory.readbyte(ram.addr.winner), 4) == 1
+    return (memory.readbyte(ram.addr.winner) >> 4) == 1
 end
 
 function ram.write_string(address, s, terminate, maxlen)
@@ -129,7 +129,7 @@ function ram.write_left_name(name, navi_chip)
     ram.write_string(base_addr + 0x0E, name, true, 11)
     -- Enable registration #126
     local flag = memory.readbyte(base_addr + 0x19)
-    flag = bit.bor(flag, 0x40)
+    flag = flag | 0x40
     memory.writebyte(base_addr + 0x19, flag)
 
     -- Set mugshot 1
@@ -146,7 +146,7 @@ function ram.write_right_name(name, navi_chip)
     ram.write_string(base_addr + 0x0E, name, true, 11)
     -- Enable registration #127
     local flag = memory.readbyte(base_addr + 0x19)
-    flag = bit.bor(flag, 0x40)
+    flag = flag | 0x40
     memory.writebyte(base_addr + 0x19, flag)
 
     -- Set mugshot 2
