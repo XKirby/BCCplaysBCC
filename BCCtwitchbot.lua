@@ -358,10 +358,10 @@ while true do
 	if counter % 3600 == 0 and TwitchBotVars.Client then
 		TwitchBotVars.Client:settimeout(1/60)
 	end
-	if ram.get_state() == 0x12
+	if ram.get_state() == 0x12 then
 		if TwitchBotVars.TurnCount > 0 then
 			if TwitchBotVars.TurnCount > 99 then TwitchBotVars.TurnCount = 99 end
-			memory.write_u8(0x0802894C, TwitchBotVars.TurnCount & 0xFF)
+			memory.write_u8(0x0308AE, TwitchBotVars.TurnCount, "ROM")
 		end
 		if ram.get_tournament_state() == 0x04 and ram.get_tournament_substate() == 0x07 then
 			local results = get_results()

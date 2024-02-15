@@ -243,47 +243,48 @@ while true do
 		print("Active Ban List set to ".. TwitchBotVars.ActiveBanList[1] ..".")
 	end
 	input_current = input.get()
-	if input_previous == nil then input_previous = input_current end
-	for k,v in pairs(input_current) do
-		if k == "Shift" then
-			if string.len(command_string) > 0 and input_previous[k] ~= v and tonumber(command_string) ~= nil then
-				bot_commands("banlist " .. command_string)
-				command_string = ""
+	if ram.get_state() ~= 0x12 then
+		if input_previous == nil then input_previous = input_current end
+		for k,v in pairs(input_current) do
+			if k == "Shift" then
+				if string.len(command_string) > 0 and input_previous[k] ~= v and tonumber(command_string) ~= nil then
+					bot_commands("banlist " .. command_string)
+					command_string = ""
+					break
+				end
+			end
+			if k == "Tab" then
+				if string.len(command_string) > 0 and input_previous[k] ~= v and tonumber(command_string) ~= nil then
+					bot_commands("turncount " .. command_string)
+					command_string = ""
+					break
+				end
+			end
+			if k == "Enter" then
+				if string.len(command_string) > 0 and input_previous[k] ~= v and tonumber(command_string) ~= nil then
+					local usr = loadUser(tonumber(command_string))
+					bot_commands("fight " .. usr)
+					command_string = ""
+					break
+				end
+			end
+			if k == "Backspace" and string.len(command_string) > 0 and input_previous[k] ~= v then
+				command_string = string.sub(command_string,0, string.len(command_string)-1)
+				break
+			end
+			if (string.find(k, "Number") ~= nil or string.find(k, "Keypad") ~= nil) and input_previous[k] ~= v then
+				k = string.sub(k,string.len(k),string.len(k))
+				command_string = command_string .. k
 				break
 			end
 		end
-		if k == "Tab" then
-			if string.len(command_string) > 0 and input_previous[k] ~= v and tonumber(command_string) ~= nil then
-				bot_commands("turncount " .. command_string)
-				command_string = ""
-				break
-			end
-		end
-		if k == "Enter" then
-			if string.len(command_string) > 0 and input_previous[k] ~= v and tonumber(command_string) ~= nil then
-				local usr = loadUser(tonumber(command_string))
-				bot_commands("fight " .. usr)
-				command_string = ""
-				break
-			end
-		end
-		if k == "Backspace" and string.len(command_string) > 0 and input_previous[k] ~= v then
-			command_string = string.sub(command_string,0, string.len(command_string)-1)
-			break
-		end
-		if (string.find(k, "Number") ~= nil or string.find(k, "Keypad") ~= nil) and input_previous[k] ~= v then
-			k = string.sub(k,string.len(k),string.len(k))
-			command_string = command_string .. k
-			break
-		end
-	end
-	input_previous = input.get()
-	if ram.get_state() == 0x12
+		input_previous = input.get()
+	elseif TwitchBotVars.TurnCount > 0 then
 		if TwitchBotVars.TurnCount > 0 then
 			if TwitchBotVars.TurnCount > 99 then TwitchBotVars.TurnCount = 99 end
-			memory.write_u8(0x0802894C, TwitchBotVars.TurnCount & 0xFF)
+			memory.write_u8(0x0308AE, TwitchBotVars.TurnCount, "ROM")
 		end
-		if endram.get_tournament_state() == 0x04 and ram.get_tournament_substate() == 0x07 then
+		if ram.get_tournament_state() == 0x04 and ram.get_tournament_substate() == 0x07 then
 			local results = get_results()
 			print(results.winner .." wins!\r\n")
 		end
