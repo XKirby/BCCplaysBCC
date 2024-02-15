@@ -279,6 +279,8 @@ while true do
 			end
 		end
 		input_previous = input.get()
+		gui.clearGraphics()
+		gui.pixelText(0, 154, command_string)
 	elseif TwitchBotVars.TurnCount > 0 then
 		if TwitchBotVars.TurnCount > 0 then
 			if TwitchBotVars.TurnCount > 99 then TwitchBotVars.TurnCount = 99 end
@@ -288,9 +290,6 @@ while true do
 			local results = get_results()
 			print(results.winner .." wins!\r\n")
 		end
-	elseif ram.get_tournament_substate() ~= 0x05 then
-		gui.clearGraphics()
-		gui.pixelText(0, 154, command_string)
 	end
 	emu.frameadvance()
 end
