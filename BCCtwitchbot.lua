@@ -241,8 +241,8 @@ function twitchbot_commands()
 										SQL.writecommand("INSERT INTO oldcodes VALUES (\""..username.."\", \""..twitchName.."\", \""..code.."\", \""..codeName.."\", 0, 0)")
 									end
 									TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :"..username.." submitted!\r\n")
-									joypad.set({A=true,B=true,Start=true,Select=true})
 									if count >= 15 then
+										joypad.set({A=true,B=true,Start=true,Select=true})
 										if #TwitchBotVars.ActiveBanList > 0 then
 											TwitchBotVars.ActiveBanList = {}
 											TwitchBotVars.Client:send("PRIVMSG #"..TwitchBotVars.Channel.." :Active Ban List reset.\r\n")

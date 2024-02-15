@@ -177,7 +177,7 @@ while true do
         elseif (ram.get_tournament_state() == 0x04) then
             -- press B at the start of battle for auto text skipping
             if (ram.is_fastforward() == 0x00) then
-				for i=1, 60*5 do
+				for i=1, 60*60 do
 					if match_start == false then break end
 					if joypad.get().A or joypad.get().B then break end
 					emu.frameadvance()
