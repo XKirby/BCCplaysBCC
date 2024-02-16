@@ -173,6 +173,7 @@ while true do
             -- switch the tournament states to do setup
             ram.set_tournament_state(0x02)
             ram.set_tournament_substate(0x07)
+			joypad.set("A", -1)
         -- in-battle tournament state
         elseif (ram.get_tournament_state() == 0x04) then
             -- press B at the start of battle for auto text skipping
