@@ -1,9 +1,9 @@
 # BCCplaysBCC
-Lua script for [Bizhawk](https://github.com/TASEmulators/BizHawk) that sets up in-game tournaments using user generated decks. Used by the [BCCplaysBCC](https://twitch.tv/BCCplaysBCC) Twitch channel. 
+Lua scripts for [Bizhawk](https://github.com/TASEmulators/BizHawk) that sets up in-game tournaments using user generated decks. Used originally by the [BCCplaysBCC](https://twitch.tv/BCCplaysBCC) Twitch channel.
 
 ## Credits
 - [Prof 9.](https://twitter.com/Prof9): Inital script, character table file, & Research
 - [NMarkro](https://twitter.com/NMarkro): Programming
-- [X Kirby](https://twitch.tv/xkirby2): Additional programming of BCCFolderEditor, BCClocalbot, and BCCtwitchbot
+- [X Kirby](https://twitch.tv/xkirby2): Additional programming of the BCCFolderEditor, BCClocalbot, BCCtwitchbot, and BCCdiscordbot files.
 
 This project is not endorsed by or affiliated with Capcom in any way. Mega Man and Mega Man Battle Network are registered trademarks of Capcom. All rights belong to their respective owners.

@@ -1,5 +1,3 @@
-# Instructions
-
 ## General Setup
 1) Download the latest release of [Bizhawk](https://tasvideos.org/Bizhawk) and its prereq installer. Install both of them, starting with the prereq installer.
 2) Acquire a clean version of Mega Man Battle Chip Challenge's rom. You're on your own for this one.
@@ -13,6 +11,22 @@
 10) Hit Open Script, then navigate to where you extracted the repository's files. Open "main.lua" first, then either "BCClocalbot.lua" or "BCCtwitchbot.lua" to start one of the bots. Open "BCCFolderEditor.lua" if you want to edit your Program Decks for the bots. Don't run both setups at the same time.
 optional) Download the latest release of [DB Browser for SQLite](https://github.com/sqlitebrowser/sqlitebrowser) to manage the sqlite database. I recommend it so you can save data in a more easy-to-access file format.
 
+## BCCdiscordbot Extra Setup
+BCCdiscordbot is a version of BCCtwitchbot that connects to a Discord account instead. To use it, you'll want to make a Bot user under the Discord Developer Portal by following these instructions.
+- Have or make a Discord account (https://discord.com/).
+- Install Python 3 (https://www.python.org/downloads/) and, using Python 3's pip installer, install "discord.py" (https://discordpy.readthedocs.io/).
+- In the Discord Developer Portal (https://discord.com/developers/applications), under the "Applications" page, hit the blue "New Application" button. Name the bot and accept the terms and conditions.
+- Click the newly-created Application panel on the same page that has your bot's name. It should have a generic text-generated icon associated with it.
+- Under "General Information", give your bot its role and description. Tags are optional, but the bot will be kept private.
+- Under "Bot", change the bot's username and generate a unique token with "Reset Token". **DO NOT SHARE THE GENERATED TOKEN.** Instead, you'll be copying that token into "BCCdiscordbot.py" by editing it with Notepad or a code editor, replacing "YOUR_DISCORD_BOT_TOKEN" with it (keep the double-quotes).
+- Further under "Bot", you'll want to enable "Message Content Intent" to allow your bot to read and write messages.
+- Under "OAuth2", remove any and all redirects, then further down under "OAuth2 URL Generator", click "bot" and "applications.commands".
+- Once clicked, even further down you'll see the Bot Permissions list. Enable "Read Messages/View Channels", "Send Messages", "Send Messages in Threads", "Embed Links", and "Read Message History".
+- Down below this list is the "Integration Type". Set this to "User Install".
+- Copy the generated URL and paste it into your browser's search bar, log into Discord, and add it to a server you own or have the "Manage Server" permission in.
+- Follow the **General Setup** instructions above, replacing "BCCtwitchbot.lua" with "BCCdiscordbot.lua".
+- Once both "main.lua" and "BCCdiscordbot.lua" are running in Bizhawk, run your edited "BCCdiscordbot.py" with Python.
+- You're done! The command list below can be sent to the bot by either direct message or via a channel the bot can see and read.
 
 ## Bot Settings
 Inside "settings.txt", which is accessed by both "BCClocalbot.lua" and "BCCtwitchbot.lua" when they first open, you will find various settings you can adjust.
@@ -23,10 +37,10 @@ Inside "settings.txt", which is accessed by both "BCClocalbot.lua" and "BCCtwitc
 - Don't edit "ActiveBanList" in this file. It will be automatically updated between tournaments and can be changed on the fly by your bot account or the Channel's account.
 - BanLists is a list of lists, with those lists further defined with a Ban List name for their first value and another list comprised of Battle Chips as their second value, which are seperated by commas. Each full Ban List table must be seperated by commas as well. (Example Ban List: {"No Cannons", {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,51,52,53,54,63,64,65,116}})
 
-### BCCwitchbot commands
+### BCCtwitchbot/BCCdiscordbot commands
 - *!info*: Prints basic information for viewers, letting them know how to use the bot.
 - *!banned*: Prints the Active Ban List.
-- *!banchange <string>*: Allows the host to change the Active Ban List.
+- *!banlist <string>*: Allows the host to change the Active Ban List.
 - *!balance*: Lists a user's Zenny balance.
 - *!turncount <int>*: Allows the host to change the total turn count for a tournament. Defaults to 10 turns.
 - *!left/!right/!random <int>*: Lets the host and viewers gamble Zenny on either of the Active Combatants, either via choice or randomly. If you don't have as much as you want to bet, it fallbacks to all of your Zenny. Betting Zenny is possible on your own Program Decks. Zenny defaults to 100 and won't go below 100 even if you lose a bet.
@@ -36,6 +50,7 @@ Inside "settings.txt", which is accessed by both "BCClocalbot.lua" and "BCCtwitc
 "BCClocalbot.lua" requires input from the user playing the game to perform its commands.
 - Keyboard 0-9: Type in Numbers
 - Shift: Load Ban List ID
+- Tab: Change Turn Count total
 - Enter: Load User from "db/navicodes.cvs" into Tournament
 
 ### BCCFolderEditor Controls

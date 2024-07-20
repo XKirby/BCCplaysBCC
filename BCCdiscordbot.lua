@@ -12,6 +12,21 @@ function bot_commands(usr, txt)
 	local msg = txt
 	local result = 0
 	if msg then
+		m, l = string.find(msg, "!banned")
+		if m then
+			if #TwitchBotVars.ActiveBanList > 0 then
+				local twitchName = usr
+				local chips = ""
+				for _,v in pairs(TwitchBotVars.ActiveBanList[2]) do
+					if chips:len() > 0 then chips = chips .. ", " end
+					chips = chips .. database.lookup_chips[v]
+				end
+				result = "Here's the current ban list, titled \"".. TwitchBotVars.ActiveBanList[1] .."\": ".. chips
+				SQL.writecommand("UPDATE commands SET result = \"" .. result .. "\" WHERE cmd =\"" .. txt .. "\" AND user = \"" .. usr .. "\"")
+				return result
+			end
+		end
+		
 		m, l = string.find(msg, "!banlist")
 		if m then
 			SQL.opendatabase("db/database.db")

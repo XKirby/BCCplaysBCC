@@ -21,7 +21,7 @@ async def on_message(message):
         return
     
     # Other Commands
-    if message.content.startswith("!banlist") or message.content.startswith("!turncount") or message.content.startswith("!balance") or message.content.startswith("!left") or message.content.startswith("!right") or message.content.startswith("!random") or message.content.startswith("!fight"):
+    if message.content.startswith("!banned") or message.content.startswith("!banlist") or message.content.startswith("!turncount") or message.content.startswith("!balance") or message.content.startswith("!left") or message.content.startswith("!right") or message.content.startswith("!random") or message.content.startswith("!fight"):
         con = sqlite3.connect("./db/database.db")
         db = con.cursor()
         res = db.execute(f"INSERT INTO commands VALUES (\"{message.author}\", \"{message.author.id}\",\"{message.content}\",NULL)")

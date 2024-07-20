@@ -46,7 +46,7 @@ function twitchbot_commands()
 			end
 		end
 		
-		m, l = string.find(msg, ":!banchange")
+		m, l = string.find(msg, ":!banlist")
 		if m then
 			local twitchName = string.sub(msg, 2, string.find(msg, "!")-1)
 			local val = string.sub(msg, l+2, string.len(msg))
@@ -100,7 +100,7 @@ function twitchbot_commands()
 			if ram.get_state() == 0x12 and ram.get_tournament_state() == 0x04 and ram.is_fastforward() == 0x00 then
 				local val = string.sub(msg, l+2, string.len(msg))
 				local twitchName = string.sub(msg, 2, string.find(msg, "!")-1)
-				val = tonumber(val)
+				val = math.floor(tonumber(val))
 				
 				if val ~= nil and type(val) == "number" then
 					SQL.opendatabase("db/database.db")
@@ -125,7 +125,7 @@ function twitchbot_commands()
 			if ram.get_state() == 0x12 and ram.get_tournament_state() == 0x04 and ram.is_fastforward() == 0x00 then
 				local val = string.sub(msg, l+2, string.len(msg))
 				local twitchName = string.sub(msg, 2, string.find(msg, "!")-1)
-				val = tonumber(val)
+				val = math.floor(tonumber(val))
 				
 				if val ~= nil and type(val) == "number" then
 					SQL.opendatabase("db/database.db")
@@ -150,7 +150,7 @@ function twitchbot_commands()
 			if ram.get_state() == 0x12 and ram.get_tournament_state() == 0x04 and ram.is_fastforward() == 0x00 then
 				local val = string.sub(msg, l+2, string.len(msg))
 				local twitchName = string.sub(msg, 2, string.find(msg, "!")-1)
-				val = tonumber(val)
+				val = math.floor(tonumber(val))
 				
 				if val ~= nil and type(val) == "number" then
 					SQL.opendatabase("db/database.db")
@@ -347,6 +347,7 @@ SQL.opendatabase("db/database.db")
 SQL.writecommand("CREATE TABLE oldcodes (username varChar(255), twitchName varChar(255), code varChar(4), codeName varChar(32), wins int NOT null, totalGames int NOT null)")
 SQL.writecommand("CREATE TABLE navicodes (username varChar(255), twitchName varChar(255), code varChar(4), codeName varChar(32), wins int NOT null, totalGames int NOT null)")
 SQL.writecommand("CREATE TABLE viewers (twitchName varChar(255), zenny int NOT null, betValue int NOT null, betTarget varChar(8))")
+SQL.writecommand("CREATE TABLE commands (user varChar(255), cmd varChar(512))")
 while true do
 	if #TwitchBotVars.ActiveBanList < 1 and #TwitchBotVars.BanLists > 0 then
 		TwitchBotVars.ActiveBanList = TwitchBotVars.BanLists[math.random(1, #TwitchBotVars.BanLists)]
